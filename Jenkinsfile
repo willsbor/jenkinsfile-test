@@ -1,4 +1,4 @@
-properties([pipelineTriggers([pollSCM('H/1 * * * *')])])
+properties([pipelineTriggers([pollSCM('H/4 * * * *')])])
 
 pipeline {
     agent any
@@ -6,7 +6,9 @@ pipeline {
         stage("SCM") {
             steps {
             //    git poll: true, url: 'git@github.com:willsbor/jenkinsfile-test.git'
-                checkout SCM
+            //    checkout SCM
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '4a1f8ef9-5a5f-4bfd-80e2-6ad127a6e855', url: 'https://github.com/willsbor/jenkinsfile-test']]])
+
             }
         }
 
