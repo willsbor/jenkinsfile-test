@@ -1,4 +1,7 @@
-properties([pipelineTriggers([pollSCM('H/4 * * * *')])])
+properties([
+    pipelineTriggers([pollSCM('H/4 * * * *')]),
+    pipelineTriggers([pollSCM('H/4 * * * *'), <object of type org.jenkinsci.plugins.fstrigger.triggers.FolderContentTrigger>])
+])
 
 pipeline {
     agent any
