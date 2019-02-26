@@ -1,3 +1,5 @@
+
+/// polling 週期請參考 cron job
 properties([
     pipelineTriggers([pollSCM('H/4 * * * *')])
 ])
@@ -7,6 +9,7 @@ pipeline {
     stages {
         stage("SCM") {
             steps {
+                /// checkout source by scm setting
                 checkout scm
             }
         }
@@ -14,16 +17,19 @@ pipeline {
         stage("prepare file from mailbox") {
             when {
                 expression {
+                    /// 只有當由上游 Job 觸發此 Job 時會執行
                     return isStartByUppersteamBuild()
                 }
             }
             steps {
+                /// 因為要將信箱內的 app.zip 轉到定義好的工作目錄下
                 script {
                     def mailBox = "/Users/jenkins/Documents/SDKServerMailBox"
                     def testingBox = "/Users/jenkins/Documents/SDKServerTesting"
                     def mailedAppName = "app.zip"
                     def tempAppName = "receive.app.zip"
                     def testAppName = "current.app.zip"
+                    
                     try {
                         sh "test -f \"${mailBox}/${mailedAppName}\""
                         echo "file exist"
@@ -41,11 +47,13 @@ pipeline {
         
         stage("cooked by Macaron") {
             steps {
+                /// 執行要實行的動作
                 script {
                     def testingBox = "/Users/jenkins/Documents/SDKServerTesting"
                     def testAppName = "current.app.zip"
 
                     try {
+                        /// 換成 執行 Macaron 的指令
                         sh "cat \"${testingBox}/${testAppName}\""
                     }
                     catch (exc) {
@@ -65,18 +73,13 @@ def removeFile(filename) {
 @NonCPS
 def isStartByUppersteamBuild() {
     def buildCauses = currentBuild.rawBuild.getCauses()
-    //echo buildCauses
-
+    
     boolean isByPollingSCM = false
     for (buildCause in buildCauses) {
         echo "${buildCause}"
 
         def matcher = ("${buildCause}" ==~ /^job.*\[hudson\.model\.Cause.*\]$/)
         if (matcher) {
-        // if ("${buildCause}".contains("hudson.triggers.SCMTrigger\$SCMTrigger")) {
-        /// job/test-pipe/51[hudson.model.Cause$UserIdCause@ba8d3b63]
-        /// job/.*\[hudson\.model\.Cause\$UserIdCause.*\]
-        /// \/.*\[hudson\.model\.Cause\\$UserIdCause.*\]
             isByPollingSCM = true
         }
     }
