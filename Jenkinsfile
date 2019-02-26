@@ -16,7 +16,7 @@ pipeline {
             steps {
                 when {
                     expression {
-                        return isStartByPollingSCM()
+                        return isStartByUppersteamBuild()
                     }
                 }
 
@@ -65,7 +65,7 @@ def removeFile(filename) {
 }
 
 @NonCPS
-def isStartByPollingSCM() {
+def isStartByUppersteamBuild() {
     def buildCauses = currentBuild.rawBuild.getCauses()
     //echo buildCauses
 
