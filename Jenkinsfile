@@ -13,13 +13,12 @@ pipeline {
         }
 
         stage("prepare file from mailbox") {
-            steps {
-                when {
-                    expression {
-                        return isStartByUppersteamBuild()
-                    }
+            when {
+                expression {
+                    return isStartByUppersteamBuild()
                 }
-
+            }
+            steps {
                 script {
                     def mailBox = "/Users/jenkins/Documents/SDKServerMailBox"
                     def testingBox = "/Users/jenkins/Documents/SDKServerTesting"
