@@ -14,7 +14,7 @@ properties([
         ]    ]
     pipelineTriggers([pollSCM('H/4 * * * *'), <object of type org.jenkinsci.plugins.fstrigger.triggers.FolderContentTrigger>])
 ])
-
+ 
 properties([
         parameters([
             string(
