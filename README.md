@@ -26,6 +26,11 @@ User -> CentralPark: build CentralPark
 activate CentralPark
 CentralPark -> MailBox: clone app.zip to
 CentralPark -> Macaron: trigger to start test
+note left of Macaron
+   trigger to start test:
+     More Detail to see TODO
+end note
+
 activate Macaron
 CentralPark --> User: Done
 deactivate CentralPark
@@ -113,3 +118,8 @@ deactivate Macaron
     3. Repositories.URL: `<the URL of Macaron Project>`
     4. Repositories.Credientials: `<select one of them>`
     5. (option) Branches to build: `<it depends on which specific branch you uses.>`
+
+## TODO
+`trigger to start test`: 是直接利用 pipeline 的命令去叫 Macaron 起來，未來區要再研究一下怎麼達到 file detect 的 cron job
+- 目前第三方的 plug-in 有點太舊了，還需要研究一下用法
+- 如果直接利用 Jenkinsfile 做檔案檢查，會導致產生過多只有檢查的 build
