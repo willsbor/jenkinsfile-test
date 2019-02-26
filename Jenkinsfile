@@ -9,7 +9,9 @@ pipeline {
         }
 
         stage("Build") {
-            //print "DEBUG ....."
+            steps {
+                print "DEBUG ....."
+            }
         }
     }
 }
