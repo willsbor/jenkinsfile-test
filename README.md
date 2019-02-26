@@ -13,7 +13,78 @@ There are two types of trigger source.
     You can see the `FakeSDKServerBuilder` creates a build and then `MacaronPrototype` also creates a build.
 
 ## Relation
+1. After building new app or sdk
+```puml
+@startuml
+actor User
+participant CentralPark order 10
+participant MailBox order 20
+participant Depot order 30
+participant Macaron order 40
 
+User -> CentralPark: build CentralPark
+activate CentralPark
+CentralPark -> MailBox: clone app.zip to
+CentralPark -> Macaron: trigger to start test
+activate Macaron
+CentralPark --> User: Done
+deactivate CentralPark
+Macaron -> MailBox: receive app.zip
+activate MailBox
+Macaron -> MailBox: mv files to ws
+activate MailBox
+MailBox --> Depot: mv app.zip
+deactivate MailBox
+deactivate MailBox
+
+Macaron -> Macaron: start to test
+activate Macaron
+Macaron -> Depot: ask app.zip
+activate Depot
+Depot --> Macaron: app.zip
+deactivate Depot
+Macaron --> Macaron: end of test
+deactivate Macaron
+
+Macaron --> User: Done
+deactivate Macaron
+
+@enduml
+```
+
+2. When Macaron test script has been updated
+```puml
+@startuml
+actor User
+participant MacaronSource order 10
+participant Macaron order 20
+participant Depot order 30
+
+User -> MacaronSource: Update Test Case
+activate MacaronSource
+deactivate MacaronSource
+
+... Cron job (~~poll SCM~~) ...
+
+Macaron -> Macaron: trigger by Cron job
+activate Macaron
+
+Macaron -> Macaron: start to test
+activate Macaron
+
+Macaron -> Depot: ask current app.zip
+activate Depot
+Depot --> Macaron: app.zip
+deactivate Depot
+
+Macaron --> Macaron: end of test
+deactivate Macaron
+
+Macaron --> User: Done
+deactivate Macaron
+
+@enduml
+```
 
 ## How to use
 
@@ -28,7 +99,7 @@ There are two types of trigger source.
         def tempAppName = "receive.app.zip"
         def testAppName = "current.app.zip"
         ```
-        to define the specific workspace for these 5 variables.
+        to define the specific value for these 5 variables.
         **Warning**: the directory needs to be created at first manually.
     4. replace correct shell script at `stage("cooked by Macaron")`
 
