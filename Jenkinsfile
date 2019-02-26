@@ -73,10 +73,12 @@ def isStartByUppersteamBuild() {
     for (buildCause in buildCauses) {
         echo "${buildCause}"
 
-        if ("${buildCause}" ==~ /job\/.*\[hudson\.model\.Cause\$UserIdCause.*\]/) {
+        def matcher = ("${buildCause}" ==~ /^job.*\[hudson\.model\.Cause.*\]$/)
+        if (matcher) {
         // if ("${buildCause}".contains("hudson.triggers.SCMTrigger\$SCMTrigger")) {
         /// job/test-pipe/51[hudson.model.Cause$UserIdCause@ba8d3b63]
         /// job/.*\[hudson\.model\.Cause\$UserIdCause.*\]
+        /// \/.*\[hudson\.model\.Cause\\$UserIdCause.*\]
             isByPollingSCM = true
         }
     }
