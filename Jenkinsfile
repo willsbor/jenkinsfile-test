@@ -14,7 +14,11 @@ pipeline {
 
         stage("prepare file from mailbox") {
             steps {
-                isStartByPollingSCM()
+                when {
+                    expression {
+                        return isStartByPollingSCM()
+                    }
+                }
 
                 script {
                     def mailBox = "/Users/jenkins/Documents/SDKServerMailBox"
@@ -65,11 +69,18 @@ def isStartByPollingSCM() {
     def buildCauses = currentBuild.rawBuild.getCauses()
     //echo buildCauses
 
+    boolean isByPollingSCM = false
     for (buildCause in buildCauses) {
         echo "${buildCause}"
-        //if ("${buildCause}".contains("hudson.triggers.TimerTrigger\$TimerTriggerCause")) {
-        //    isStartedByTimer = true
-        //}
+
+        if ("${buildCause}" ==~ /job\/.*\[hudson\.model\.Cause\$UserIdCause.*\]/) {
+        // if ("${buildCause}".contains("hudson.triggers.SCMTrigger\$SCMTrigger")) {
+        /// job/test-pipe/51[hudson.model.Cause$UserIdCause@ba8d3b63]
+        /// job/.*\[hudson\.model\.Cause\$UserIdCause.*\]
+            isByPollingSCM = true
+        }
     }
+
+    return isByPollingSCM
 }
 
